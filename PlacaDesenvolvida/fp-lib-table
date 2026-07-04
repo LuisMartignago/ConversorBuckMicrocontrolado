@@ -1,0 +1,5 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "IsoladorMeus") (type "KiCad") (uri "C:/Users/marti/OneDrive/Anexos/Documentos/KiCad/kicad-footprints-master/IsoladorMeus.pretty") (options "") (descr ""))
+	(lib (name "meusIndutores") (type "KiCad") (uri "${KIPRJMOD}/meusIndutores.pretty") (options "") (descr ""))
+)
