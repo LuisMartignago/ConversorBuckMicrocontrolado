@@ -1,141 +1,117 @@
 # Conversor Buck Microcontrolado
 
-Projeto de desenvolvimento de um **Conversor CC-CC Buck Microcontrolado**, utilizando o microcontrolador **CH32V003F4P6** para geração do sinal PWM e controle da tensão de saída.
+Projeto de um conversor CC-CC abaixador (Buck Converter) com controle digital implementado em um microcontrolador **CH32V003**, desenvolvido com foco em aplicações de eletrônica de potência, sistemas embarcados e controle digital.
 
-## 📖 Descrição
-
-Este projeto tem como objetivo implementar um conversor Buck com controle digital, permitindo o ajuste da razão cíclica (Duty Cycle) por meio de um microcontrolador.
-
-O sistema foi desenvolvido para aplicações didáticas e de pesquisa em Eletrônica de Potência, podendo ser utilizado para estudos sobre:
-
-- Conversores CC-CC;
-- Geração de PWM;
-- Controle digital;
-- Aquisição de tensão via ADC;
-- Controle em malha aberta e futura implementação em malha fechada (PI/PID).
+O projeto contempla o desenvolvimento completo do hardware e do firmware, incluindo o dimensionamento da etapa de potência, condicionamento dos sinais analógicos, controle por PWM, algoritmo de controle PI, proteção contra sobrecorrente e interface de comunicação serial.
 
 ---
 
-## ⚙️ Características
+## Principais características
 
-- Microcontrolador CH32V003F4P6
-- Conversor Buck
-- Controle digital por PWM
-- Ajuste do Duty Cycle por botões
-- Monitoramento da tensão de saída
-- Interface simples de operação
-- Código em linguagem C
-
----
-
-## 🖥 Hardware
-
-### Microcontrolador
-
-- CH32V003F4P6
-
-### Entrada
-
-- Fonte CC
-
-### Saída
-
-- Conversor Buck
-
-### Controle
-
-- PWM por Timer
-
-### Sensores
-
-- Leitura da tensão de saída via ADC
+* Conversor Buck microcontrolado.
+* Controle digital de tensão utilizando controlador **PI**.
+* Geração de PWM por hardware utilizando o temporizador **TIM1**.
+* Aquisição de tensão e corrente através do ADC.
+* Conversão automática utilizando **ADC + DMA**.
+* Comunicação serial UART para monitoramento e configuração.
+* Limitação de corrente por software.
+* Controle de rampa (*Rate Limiter*) para partida suave e alterações da referência.
+* Proteção contra *Integral Windup*.
+* Firmware desenvolvido em linguagem C.
+* Hardware desenvolvido no KiCad.
 
 ---
 
-## 🎮 Funcionamento
+## Hardware
 
-Os botões disponíveis permitem:
+O conversor é composto pelos seguintes blocos principais:
 
-| Botão | Função |
-|--------|--------|
-| BOT+ | Incrementa o Duty Cycle |
-| BOT− | Decrementa o Duty Cycle |
-| Liga/Desliga | Habilita ou desabilita o PWM |
-
-As saídas digitais disponibilizam o valor do Duty Cycle em formato binário para depuração.
+* Microcontrolador **CH32V003**;
+* Conversor Buck de potência;
+* Driver para acionamento do MOSFET;
+* Fonte auxiliar isolada para alimentação do gate driver;
+* Reguladores de tensão para alimentação dos circuitos de controle;
+* Divisor resistivo para medição da tensão;
+* Resistor shunt para medição da corrente;
+* Amplificador operacional interno do CH32V003 para condicionamento do sinal de corrente.
 
 ---
 
-## 📂 Estrutura do Projeto
+## Estratégia de controle
 
-```
-ConversorBuckMicrocontrolado/
-│
+O controle da tensão de saída é realizado por um controlador **Proporcional–Integral (PI)**.
+
+A implementação inclui:
+
+* cálculo periódico do erro;
+* atualização do termo integral;
+* limitação do integrador (*Anti-Windup*);
+* saturação da saída do controlador;
+* atualização do ciclo de trabalho do PWM.
+
+Para reduzir transitórios durante alterações da referência, foi implementado um algoritmo de **Rate Limiter**, permitindo variações graduais da tensão de saída.
+
+Como mecanismo adicional de proteção, quando a corrente ultrapassa o limite configurado, a referência de tensão é reduzida gradualmente e o integrador do controlador é parcialmente descarregado, proporcionando recuperação rápida após a remoção da condição de sobrecorrente.
+
+---
+
+## Comunicação Serial
+
+O firmware disponibiliza uma interface UART para:
+
+* monitoramento da tensão;
+* monitoramento da corrente;
+* ajuste de parâmetros;
+* depuração do sistema.
+
+A transmissão utiliza **DMA**, reduzindo significativamente a utilização da CPU.
+
+---
+
+## Estrutura do repositório
+
+```text
+.
 ├── Firmware/
 ├── Hardware/
+│   ├── Esquemáticos
+│   ├── PCB
+│   └── Bibliotecas
 ├── Documentação/
-├── PCB/
-├── Simulações/
+├── Imagens/
 └── README.md
 ```
 
 ---
 
-## 🔧 Ferramentas Utilizadas
+## Ferramentas utilizadas
 
-- MounRiver Studio
-- WCH-Link
-- EasyEDA / KiCad (PCB)
-- Git
-- GitHub
-
----
-
-## 🚀 Objetivos
-
-- Desenvolver um conversor Buck de baixo custo.
-- Implementar controle digital utilizando microcontrolador RISC-V.
-- Disponibilizar um projeto open source para estudos em Eletrônica de Potência.
+* KiCad
+* GCC para RISC-V
+* WCH MounRiver Studio
+* Git
+* GitHub
 
 ---
 
-## 📈 Melhorias Futuras
+## Aplicações
 
-- Controle PI
-- Controle PID
-- Display OLED
-- Comunicação Serial
-- Interface USB
-- Telemetria
-- Registro de dados
-- Proteção contra sobrecorrente
-- Proteção contra sobretensão
+Este projeto pode ser utilizado como base para:
 
----
-
-## 📷 Imagens
-
-Em breve serão adicionadas imagens do circuito, PCB e funcionamento.
+* estudos de Eletrônica de Potência;
+* Sistemas Embarcados;
+* Controle Digital;
+* Fontes chaveadas;
+* Conversores CC-CC;
+* projetos acadêmicos;
+* trabalhos de conclusão de curso.
 
 ---
 
-## 📄 Licença
+## Licença
 
-Este projeto é disponibilizado para fins acadêmicos e educacionais.
-
----
-
-## 👨‍💻 Autor
-
-**Luís Alberto Martignago**
-
-GitHub:
-https://github.com/LuisMartignago
+Este projeto está disponibilizado para fins acadêmicos e de pesquisa.
 
 ---
 
-## ⭐ Contribuições
-
-Contribuições são bem-vindas.
-
-Caso encontre algum problema ou tenha sugestões de melhorias, fique à vontade para abrir uma *Issue* ou enviar um *Pull Request*.
+Caso este projeto seja utilizado em trabalhos acadêmicos, solicita-se a devida citação do repositório.
